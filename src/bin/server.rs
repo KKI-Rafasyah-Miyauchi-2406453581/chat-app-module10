@@ -29,8 +29,10 @@ async fn handle_connection(
             Some(Ok(msg)) = ws_stream.next() => {
                 if let Some(text) = msg.as_text() {
                     println!("From client {addr:?} {text:?}");
-                    // We just broadcast the text as-is for 2.1
-                    let _ = bcast_tx.send(text.to_string());
+                    
+                    // EXPERIMENT 2.3 CHANGE: Format the message to include the sender's IP/Port
+                    let formatted_msg = format!("{}: {}", addr, text);
+                    let _ = bcast_tx.send(formatted_msg);
                 }
             }
             else => break, // The client disconnected
